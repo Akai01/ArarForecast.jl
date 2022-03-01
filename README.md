@@ -1,2 +1,1 @@
-# ArarForecast.jl
-Forecasting using Arar algorithm 
+# ArarForecast
