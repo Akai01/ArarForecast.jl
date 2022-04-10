@@ -122,15 +122,13 @@ end
 
 if h > 1
   for j in 1:(h-1)
-    τ[j + 1] = -sum((τ[1:j] .* xi[(1:j) .+ 1]))
+    τ[j + 1] = -sum((τ[1:j] .* xi[sort(((1:j) .+ 1), rev = true)]))
   end
 
 end
 
 se = Statistics.sqrt!(σ2 .* map(j -> sum(τ[1:j].^2), 1:h))
 
-out = [meanfc meanfc + 1.96 .* se meanfc + 1.28 .* se meanfc - 1.96 .* se meanfc - 1.28 .* se]
-    
 data = (datetime = future_dates, Point_Forecast = meanfc, Upper95 = meanfc + 1.96 .* se, Upper80 = meanfc + 1.28 .* se, Lower95 = meanfc - 1.96 .* se, Lower80 = meanfc - 1.28 .* se)
 out = TimeArray(data; timestamp = :datetime)
 
