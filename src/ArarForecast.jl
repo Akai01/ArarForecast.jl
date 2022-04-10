@@ -1,9 +1,15 @@
 module ArarForecast
 
 using Statistics
+using TimeSeries
+using Dates
 
-function arar(y, h, max_lag)
+
+function arar(y::TimeArray, h::Int, freq::DataType)
+  future_dates = range(maximum(timestamp(y)) + freq(1); step=freq(1), length=h)
+  y = dropdims(values(y), dims = 2)
   Y = y
+  @assert length(y) >= 40 "Series is too short for arar"
   Ψ = [1]
 
   for k in collect(1:3) 
@@ -36,7 +42,10 @@ function arar(y, h, max_lag)
 S = y
 Sbar = mean(S)
 X = S .- Sbar
-gamma = acvf(X, max_lag)
+max_lag = 40
+n = length(X)
+xbar = Statistics.mean(X)
+gamma = map(i -> sum((X[1:(n - i)] .- xbar) .* (X[(i + 1):n] .- xbar))/n, 0:max_lag)
 y = Y
 A = reshape(repeat([gamma[1]], 16), (4,4))
 b = zeros(4)
@@ -95,7 +104,7 @@ c = (1 - sum(ϕ)) .* Sbar
 meanfc = map(i-> y[n + i] = - sum(xi[2:k] .* y[n + i + 1 .- (2:k)]) .+ c, 1:h)
 y = y[1:n]
 if h > k
-  xi = [xi, zeros(h - k)]
+  xi = append!(xi, zeros(h - k))
 end
 τ = zeros(h)
 τ[1] = 1
@@ -109,8 +118,12 @@ end
 
 se = Statistics.sqrt!(σ2 .* map(j -> sum(τ[1:j].^2), 1:h))
 
-return meanfc
+out = [meanfc meanfc + 1.96 .* se meanfc + 1.28 .* se meanfc - 1.96 .* se meanfc - 1.28 .* se]
+    
+data = (datetime = future_dates, Point_Forecast = meanfc, Upper95 = meanfc + 1.96 .* se, Upper80 = meanfc + 1.28 .* se, Lower95 = meanfc - 1.96 .* se, Lower80 = meanfc - 1.28 .* se)
+out = TimeArray(data; timestamp = :datetime)
+
+return out
 
 end
-
 end
