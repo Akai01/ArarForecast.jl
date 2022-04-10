@@ -1,10 +1,22 @@
 module ArarForecast
 
-using Statistics
-using TimeSeries
-using Dates
+using Statistics, TimeSeries, Dates
+"""
+arar(y::TimeArray, h::Int, freq::DataType)
 
+Forecasting using ARAR algorithm.
 
+# Arguments
+- `y::TimeArray`: An TimeArray with only one value column.
+- `h::Int`: Forecast horizon as an integer.
+- `freq::DataType`: A DataType from Dates, e.g. Dates.Day or Dates.Month.
+
+# Examples
+```julia-repl
+julia> arar(data, 12, Month)
+
+```
+"""
 function arar(y::TimeArray, h::Int, freq::DataType)
   future_dates = range(maximum(timestamp(y)) + freq(1); step=freq(1), length=h)
   y = dropdims(values(y), dims = 2)
@@ -113,7 +125,7 @@ if h > 1
   for j in 1:(h-1)
     τ[j + 1] = -sum((τ[1:j] .* xi[(1:j) .+ 1]))
   end
-  
+
 end
 
 se = Statistics.sqrt!(σ2 .* map(j -> sum(τ[1:j].^2), 1:h))
