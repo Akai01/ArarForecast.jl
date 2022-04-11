@@ -9,6 +9,7 @@ Return A matrix of forecast values and prediction intervals
 - `y::TimeArray`: An TimeArray with only one value column.
 - `h::Int`: Forecast horizon as an integer.
 - `freq::DataType`: A DataType from Dates, e.g. Dates.Day or Dates.Month.
+- `max_lag::Int`: An integer (>= 26) to specify maximum number of lags for sample autocovariance.
 
 # Examples
 ```julia-repl
@@ -16,11 +17,11 @@ julia> arar(data, 12, Month)
 
 ```
 """
-function arar(y::TimeArray, h::Int, freq::DataType)
+function arar(y::TimeArray, h::Int, freq::DataType, max_lag::Int=40)
   future_dates = range(maximum(timestamp(y)) + freq(1); step=freq(1), length=h)
   y = dropdims(values(y), dims = 2)
   Y = y
-  @assert length(y) >= 40 "Series is too short for arar"
+  @assert length(y) >= max_lag "Series is too short for arar"
   Ψ = [1]
 
   for k in collect(1:3) 
@@ -53,7 +54,6 @@ function arar(y::TimeArray, h::Int, freq::DataType)
 S = y
 Sbar = mean(S)
 X = S .- Sbar
-max_lag = 40
 n = length(X)
 xbar = Statistics.mean(X)
 gamma = map(i -> sum((X[1:(n - i)] .- xbar) .* (X[(i + 1):n] .- xbar))/n, 0:max_lag)
@@ -129,7 +129,12 @@ end
 
 se = Statistics.sqrt!(σ2 .* map(j -> sum(τ[1:j].^2), 1:h))
 
-data = (datetime = future_dates, Point_Forecast = meanfc, Upper95 = meanfc + 1.96 .* se, Upper80 = meanfc + 1.28 .* se, Lower95 = meanfc - 1.96 .* se, Lower80 = meanfc - 1.28 .* se)
+data = (datetime = future_dates, 
+Point_Forecast = meanfc, 
+Upper95 = meanfc + 1.96 .* se, 
+Upper80 = meanfc + 1.28 .* se, 
+Lower95 = meanfc - 1.96 .* se, 
+Lower80 = meanfc - 1.28 .* se)
 out = TimeArray(data; timestamp = :datetime)
 
 return out
