@@ -1,5 +1,5 @@
 """
-arar(y::TimeArray, h::Int, freq::DataType)
+arar(y::TimeArray, h::Int, freq::DataType, max_lag::Int)
 
 Forecasting using ARAR algorithm.
 
