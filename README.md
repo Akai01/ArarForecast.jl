@@ -2,124 +2,124 @@
 
 # Note: The project is under development!
 
+<div id="the-arar-algorithm" class="section level1">
+<h1>The ARAR Algorithm:</h1>
+<div id="memory-shortening" class="section level2">
+<h2>Memory Shortening</h2>
+<p>The ARAR algorithm applies a memory-shortening transformation if the
+underlying process of a given time series <span class="math inline">\({Y_{t}, t = 1, 2, ..., n}\)</span> is
+“long-memory” then it fits an autoregressive model.</p>
+<p>The algorithm follows five steps to classify <span class="math inline">\({Y_{t}}\)</span> and take one of the following
+three actions:</p>
+<ul>
+<li>L: declare <span class="math inline">\({Y_{t}}\)</span> as long
+memory and form <span class="math inline">\({Y_{t}}\)</span> by <span class="math inline">\({\tilde{Y}_{t} = Y_{t} - \hat{\phi}Y_{t -
+\hat{\tau}}}\)</span></li>
+<li>M: declare <span class="math inline">\({Y_{t}}\)</span> as
+moderately long memory and form <span class="math inline">\({Y_{t}}\)</span> by <span class="math inline">\({\tilde{Y}_{t} = Y_{t} - \hat{\phi}_{1}Y_{t -1} -
+\hat{\phi}_{2}Y_{t -2}}\)</span></li>
+<li>S: declare <span class="math inline">\({Y_{t}}\)</span> as short
+memory.</li>
+</ul>
+<p>If <span class="math inline">\({Y_{t}}\)</span> declared to be <span class="math inline">\(L\)</span> or <span class="math inline">\(M\)</span> then the series <span class="math inline">\({Y_{t}}\)</span> is transformed again until. The
+transformation process continuous until the transformed series is
+classified as short memory. However, the maximum number of
+transformation process is three, it is very rare a time series require
+more than 2.</p>
 
-The ARAR Algorithm:
-===================
+* 1. For each <span class="math inline">\(\tau = 1, 2, ...,
+15\)</span>, we find the value <span class="math inline">\(\hat{\phi(\tau)}\)</span> of <span class="math inline">\(\hat{\phi}\)</span> that minimizes;</p>
+<p><span class="math display">\[\begin{equation}
+ERR(\phi, \tau) = \frac{\sum_{t=\tau +1 }^{n} [Y_{t} - \phi
+Y_{t-\tau}]^2}{\sum_{t=\tau+1}^{n}Y_{t}^{2}}
+\end{equation}\]</span> then define</p>
+<p><span class="math inline">\(Err(\tau) = ERR(\hat{\phi(\tau),
+\tau})\)</span> and choose the lag <span class="math inline">\(\hat{\tau}\)</span> to be the value of <span class="math inline">\(\tau\)</span> that minimizes <span class="math inline">\(Err(\tau)\)</span>.</p></li>
+</ol></li>
 
-Memory Shortening
------------------
+* 3.  If *ϕ̂*(*τ̂*) ≥ 0.93 and *τ̂* &gt; 2, *Y*<sub>*t*</sub> is a long-memory series.
+* 4.  If *ϕ̂*(*τ̂*) ≥ 0.93 and *τ̂* = 1 or 2, *Y*<sub>*t*</sub> is  long-memory series.
+* 5.  If *ϕ̂*(*τ̂*) &lt; 0.93, *Y*<sub>*t*</sub> is a short-memory series.
 
-The ARAR algorithm applies a memory-shortening transformation if the
-underlying process of a given time series ${Y_{t}, t = 1, 2, ..., n}$ is
-"long-memory" then it fits an autoregressive model.
-
-The algorithm follows five steps to classify ${Y_{t}}$ and take one of
-the following three actions:
-
--   L: declare ${Y_{t}}$ as long memory and form ${Y_{t}}$ by
-    ${\tilde{Y}_{t} = Y_{t} - \hat{\phi}Y_{t - \hat{\tau}}}$
--   M: declare ${Y_{t}}$ as moderately long memory and form ${Y_{t}}$ by
-    ${\tilde{Y}_{t} = Y_{t} - \hat{\phi}_{1}Y_{t -1} - \hat{\phi}_{2}Y_{t -2}}$
--   S: declare ${Y_{t}}$ as short memory.
-
-If ${Y_{t}}$ declared to be $L$ or $M$ then the series ${Y_{t}}$ is
-transformed again until. The transformation process continuous until the
-transformed series is classified as short memory. However, the maximum
-number of transformation process is three, it is very rare a time series
-require more than 2.
-
--   1.  For each $\tau = 1, 2, ..., 15$, we find the value
-        $\hat{\phi(\tau)}$ of $\hat{\phi}$ that minimizes
-        $ERR(\phi, \tau) = \frac{\sum_{t=\tau +1 }^{n} [Y_{t} - \phi Y_{t-\tau}]^2 }{\sum_{t=\tau +1 }^{n} Y_{t}^{2}}$
-        then define $Err(\tau) = ERR(\hat{\phi(\tau), \tau})$ and choose
-        the lag $\hat{\tau}$ to be the value of $\tau$ that minimizes
-        $Err(\tau)$.
-
--   2.  If $Err(\hat{\tau}) \leq 8/n$, ${Y_{t}}$ is a long-memory
-        series.
-
--   3.  If $\hat{\phi}( \hat{\tau} ) \geq 0.93$ and $\hat{\tau} > 2$,
-        ${Y_{t}}$ is a long-memory series.
-
--   4.  If $\hat{\phi}( \hat{\tau} ) \geq 0.93$ and $\hat{\tau} = 1$ or
-        $2$, ${Y_{t}}$ is a long-memory series.
-
--   5.  If $\hat{\phi}( \hat{\tau} ) < 0.93$, ${Y_{t}}$ is a
-        short-memory series.
-
-Subset Autoregressive Model:
-----------------------------
-
-In the following we will describe how ARAR algorithm fits an
-autoregressive process to the mean-corrected series
-$X_{t} = S_{t}- {\bar{S}}$, $t = k+1, ..., n$ where
-${S_{t}, t = k + 1, ..., n}$ is the memory-shortened version of
-${Y_{t}}$ which derived from the five steps we described above and
-$\bar{S}$ is the sample mean of $S_{k+1}, ..., S_{n}$.
-
-The fitted model has the following form:
-
-$X_{t} = \phi_{1}X{t-1} + \phi_{1}X_{t-l_{1}} + \phi_{1}X_{t- l_{1}} + \phi_{1}X_{t-l_{1}} + Z$
-
-where $Z \sim WN(0, \sigma^{2})$. The coefficients $\phi_{j}$ and white
-noise variance $\sigma^2$ can be derived from the Yule-Walker equations
-for given lags $l_1, l_2,$ and $l_3$ : \begin{equation}
- \begin{bmatrix}
-1 & \hat{\rho}(l_1 - 1) & \hat{\rho}(l_2 - 1) & \hat{\rho}(l_3 - 1)\\
-\hat{\rho}(l_1 - 1) &1 & \hat{\rho}(l_2 - l_1) & \hat{\rho}(l_3 - l_1)\\
-\hat{\rho}(l_2 - 1) & \hat{\rho}(l_2 - l_1) & 1 & \hat{\rho}(l_2 - l_2)\\
-\hat{\rho}(l_3 - 1) & \hat{\rho}(l_3 - l_1) & \hat{\rho}(l_3 - l_1) & 1
+</ol></li>
+</ul>
+</div>
+<div id="subset-autoregressive-model" class="section level2">
+<h2>Subset Autoregressive Model:</h2>
+<p>In the following we will describe how ARAR algorithm fits an
+autoregressive process to the mean-corrected series <span class="math inline">\(X_{t} = S_{t}- {\bar{S}}\)</span>, <span class="math inline">\(t = k+1, ..., n\)</span> where <span class="math inline">\({S_{t}, t = k + 1, ..., n}\)</span> is the
+memory-shortened version of <span class="math inline">\({Y_{t}}\)</span>
+which derived from the five steps we described above and <span class="math inline">\(\bar{S}\)</span> is the sample mean of <span class="math inline">\(S_{k+1}, ..., S_{n}\)</span>.</p>
+<p>The fitted model has the following form:</p>
+<p><span class="math inline">\(X_{t} = \phi_{1}X{t-1} +
+\phi_{1}X_{t-l_{1}} + \phi_{1}X_{t- l_{1}} + \phi_{1}X_{t-l_{1}} +
+Z\)</span></p>
+<p>where <span class="math inline">\(Z \sim WN(0, \sigma^{2})\)</span>.
+The coefficients <span class="math inline">\(\phi_{j}\)</span> and white
+noise variance <span class="math inline">\(\sigma^2\)</span> can be
+derived from the Yule-Walker equations for given lags <span class="math inline">\(l_1, l_2,\)</span> and <span class="math inline">\(l_3\)</span> : <span class="math display">\[\begin{equation}
+\begin{bmatrix}
+1 & \hat{\rho}(l_1 - 1) & \hat{\rho}(l_2 - 1) &
+\hat{\rho}(l_3 - 1)\\
+\hat{\rho}(l_1 - 1) &1 & \hat{\rho}(l_2 - l_1) &
+\hat{\rho}(l_3 - l_1)\\
+\hat{\rho}(l_2 - 1) & \hat{\rho}(l_2 - l_1) & 1 &
+\hat{\rho}(l_2 - l_2)\\
+\hat{\rho}(l_3 - 1) & \hat{\rho}(l_3 - l_1) & \hat{\rho}(l_3 -
+l_1) & 1
 \end{bmatrix}*\begin{bmatrix}
 \phi_{1} \\
 \phi_{l_1} \\
 \phi_{l_2}\\
 \phi_{l_3}
-\end{bmatrix} = \begin{bmatrix} \hat{\rho}(1) \\ \hat{\rho}(l_1) \\ \hat{\rho}(l_2)\\ \hat{\rho}(l_3) \end{bmatrix}
-\end{equation}
+\end{bmatrix} = \begin{bmatrix} \hat{\rho}(1) \\ \hat{\rho}(l_1) \\
+\hat{\rho}(l_2)\\ \hat{\rho}(l_3) \end{bmatrix}
+\end{equation}\]</span></p>
+<p>and <span class="math inline">\(\sigma^2 = \hat{\gamma}(0)
+[1-\phi_1\hat{\rho}(1)] - \phi_{l_1}\hat{\rho}(l_1)] -
+\phi_{l_2}\hat{\rho}(l_2)] - \phi_{l_3}\hat{\rho}(l_3)]\)</span>, where
+<span class="math inline">\(\hat{\gamma}(j)\)</span> and <span class="math inline">\(\hat{\rho}(j), j = 0, 1, 2, ...,\)</span> are the
+sample autocovariances and autocorelations of the series <span class="math inline">\(X_{t}\)</span>.</p>
 
-and
-$\sigma^2 = \hat{\gamma}(0) [1-\phi_1\hat{\rho}(1)] - \phi_{l_1}\hat{\rho}(l_1)] - \phi_{l_2}\hat{\rho}(l_2)] - \phi_{l_3}\hat{\rho}(l_3)]$,
-where $\hat{\gamma}(j)$ and $\hat{\rho}(j), j = 0, 1, 2, ...,$ are the
-sample autocovariances and autocorelations of the series $X_{t}$.
+The algorithm computes the coefficients of *ϕ*(*j*) for each set of lags
+where
+1 &lt; *l*<sub>1</sub> &lt; *l*<sub>2</sub> &lt; *l*<sub>3</sub> ≤ *m*
+where m chosen to be 13 or 26. The algorithm selects the model that the
+Yule-Walker estimate of *σ*<sup>2</sup> i
 
-The algorithm computes the coefficients of $\phi(j)$ for each set of
-lags where $1<l_1<l_2<l_3 \leq m$ where m chosen to be 13 or 26. The
-algorithm selects the model that the Yule-Walker estimate of $\sigma^2$
-is minimal.
 
-Forecasting
------------
-
-If short-memory filter found in first step it has coefficients
-$\Psi_0, \Psi_1, ..., \Psi_k (k \geq0)$ where $\Psi_0 = 1$. In this case
-the transforemed series can be expressed as \begin{equation}
+</div>
+<div id="forecasting" class="section level2">
+<h2>Forecasting</h2>
+<p>If short-memory filter found in first step it has coefficients <span class="math inline">\(\Psi_0, \Psi_1, ..., \Psi_k (k \geq0)\)</span>
+where <span class="math inline">\(\Psi_0 = 1\)</span>. In this case the
+transforemed series can be expressed as <span class="math display">\[\begin{equation}
     S_t = \Psi(B)Y_t = Y_t + \Psi_1 Y_{t-1} + ...+ \Psi_k Y_{t-k},
-\end{equation} where $\Psi(B) = 1 + \Psi_1B + ...+ \Psi_k B^k$ is
-polynomial in the back-shift operator.
-
-If the coefficients of the subset autoregression found in the second
-step it has coefficients $\phi_1, \phi_{l_1}, \phi_{l_2}$ and
-$\phi_{l_3}$ then the subset AR model for $X_t = S_t - \bar{S}$ is
-\begin{equation}
+\end{equation}\]</span> where <span class="math inline">\(\Psi(B) = 1 +
+\Psi_1B + ...+ \Psi_k B^k\)</span> is polynomial in the back-shift
+operator.</p>
+<p>If the coefficients of the subset autoregression found in the second
+step it has coefficients <span class="math inline">\(\phi_1, \phi_{l_1},
+\phi_{l_2}\)</span> and <span class="math inline">\(\phi_{l_3}\)</span>
+then the subset AR model for <span class="math inline">\(X_t = S_t -
+\bar{S}\)</span> is <span class="math display">\[\begin{equation}
     \phi(B)X_t = Z_t,
-\end{equation}
-
-where $Z_t$ is a white-noise series with zero mean and constant variance
-and
-$\phi(B) = 1 - \phi_1B - \phi_{l_1}B^{l_1} - \phi_{l_2}B^{l_2} - \phi_{l_3}B^{l_3}$.
-From equation (1) and (2) one can obtain
-
-\begin{equation}
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(Z_t\)</span> is a white-noise
+series with zero mean and constant variance and <span class="math inline">\(\phi(B) = 1 - \phi_1B - \phi_{l_1}B^{l_1} -
+\phi_{l_2}B^{l_2} - \phi_{l_3}B^{l_3}\)</span>. From equation (1) and
+(2) one can obtain</p>
+<p><span class="math display">\[\begin{equation}
     \xi(B)Y_t = \phi(1)\bar{S} + Z_t,
-\end{equation} where $\xi (B) = \Psi(B)\phi(B)$.
+\end{equation}\]</span> where <span class="math inline">\(\xi (B) =
+\Psi(B)\phi(B)\)</span>.</p>
 
-Assuming the fitted model in equation (3) is an appropriate model, and
-$Z_t$ is uncorrelated with $Y_j, j <t$ $\forall t \in T$, one can
-determine minimum mean squared error linear predictors $P_n Y_{n + h}$
-of $Y_{n+h}$ in terms of ${1, Y_1, ..., Y_n}$ for $n > k + l_3$, from
-recursions
 
-\begin{equation}
-    P_n Y_{n+h} = - \sum_{j = 1}^{k + l_3} \xi P_nY_{n+h-j} + \phi(1)\bar{S},  h\geq 1,
-\end{equation} with the initial conditions $P_n Y_{n+h} = Y_{n + h}$,
-for $h\leq0$.
+<p>Assuming the fitted model in equation (3) is an appropriate model,
+and <span class="math inline">\(Z_t\)</span> is uncorrelated with *Y*<sub>*j*</sub>, *j* &lt; *t*
+∀*t* ∈ *T*, one can determine
+minimum mean squared error linear predictors <span class="math inline">\(P_n Y_{n + h}\)</span> of <span class="math inline">\(Y_{n+h}\)</span> in terms of <span class="math inline">\({1, Y_1, ..., Y_n}\)</span> for *n* &gt; *k* + *l*, from recursions</p>
+<p><span class="math display">\[\begin{equation}
+    P_n Y_{n+h} = - \sum_{j = 1}^{k + l_3} \xi P_nY_{n+h-j} +
+\phi(1)\bar{S},  h\geq 1,
+\end{equation}\]</span> with the initial conditions <span class="math inline">\(P_n Y_{n+h} = Y_{n + h}\)</span>, for <span class="math inline">\(h\leq0\)</span>.</p>
