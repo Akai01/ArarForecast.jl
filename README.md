@@ -173,3 +173,8 @@ with the initial conditions
 
 
 ### Ref: Brockwell, Peter J, and Richard A. Davis. Introduction to Time Series and Forecasting. [Springer](https://link.springer.com/book/10.1007/978-3-319-29854-2) (2016)
+
+
+# TODO
+1. Add ploting functions
+2. Evaluation metrics functionalities
