@@ -1,5 +1,7 @@
 push!(LOAD_PATH,"../src/")
 using ArarForecast
+using Pkg; 
+Pkg.add("Documenter")
 using Documenter
 makedocs(
          sitename = "ArarForecast.jl",
