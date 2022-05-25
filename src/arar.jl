@@ -19,7 +19,7 @@ julia> arar(data, 12, Month)
 """
 function arar(y::TimeArray, h::Int, freq::DataType, max_lag::Int=40)
   future_dates = range(maximum(timestamp(y)) + freq(1); step=freq(1), length=h)
-  y = dropdims(values(y), dims = 2)
+  y = values(y)
   Y = y
   @assert length(y) >= max_lag "Series is too short for arar"
   Ψ = [1]
