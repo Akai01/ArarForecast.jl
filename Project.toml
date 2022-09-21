@@ -1,7 +1,7 @@
 name = "ArarForecast"
 uuid = "4f58c5ef-8bf7-4cec-85cb-5f877db67c0d"
 authors = ["Resul Akay <resulakay1@gmail.com> and contributors"]
-version = "0.1.0"
+version = "0.1.2"
 
 [deps]
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"

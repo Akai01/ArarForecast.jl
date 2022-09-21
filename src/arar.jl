@@ -1,6 +1,4 @@
-using TimeSeries: TimeArray
-
-struct ArarForecast
+struct ForecastARAR
   mean::TimeArray
   lower::TimeArray
   upper::TimeArray
@@ -28,8 +26,9 @@ julia> arar(data, 12, Month)
 ```
 """
 function arar(y::TimeArray, h::Int, freq::DataType, max_lag::Int=40)
-  y_keep = y
+
   future_dates = range(maximum(timestamp(y)) + freq(1); step=freq(1), length=h)
+  y_keep = y
   y = dropdims(values(y), dims = 2)
   Y = y
   @assert length(y) >= max_lag "Series is too short for arar"
@@ -144,9 +143,8 @@ meanfc = (datetime = future_dates,
 Point_Forecast = meanfc)
 meanfc = TimeArray(meanfc; timestamp = :datetime)
 
-upper = (datetime = future_dates, 
-Upper95 = meanfc + 1.96 .* se, 
-Upper80 = meanfc + 1.28 .* se)
+upper = (datetime = future_dates, Upper95 = meanfc + 1.96 .* se, Upper80 = meanfc + 1.28 .* se)
+
 upper = TimeArray(upper; timestamp = :datetime)
 
 lower = (datetime = future_dates,  
@@ -154,6 +152,6 @@ Lower95 = meanfc - 1.96 .* se,
 Lower80 = meanfc - 1.28 .* se)
 lower = TimeArray(lower; timestamp = :datetime)
 method = "Arar Forecast"
-out = ArarForecast(meanfc, lower, upper, method, y_keep)
+out = ForecastARAR(meanfc, lower, upper, method, y_keep)
 return out
 end
