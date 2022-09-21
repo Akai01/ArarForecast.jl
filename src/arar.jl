@@ -139,19 +139,19 @@ end
 
 se = Statistics.sqrt!(σ2 .* map(j -> sum(τ[1:j].^2), 1:h))
 
-meanfc = (datetime = future_dates, 
-Point_Forecast = meanfc)
-meanfc = TimeArray(meanfc; timestamp = :datetime)
+mean_fc = (datetime = future_dates, Point_Forecast = meanfc)
+mean_fc = TimeArray(mean_fc; timestamp = :datetime)
 
 upper = (datetime = future_dates, Upper95 = meanfc + 1.96 .* se, Upper80 = meanfc + 1.28 .* se)
 
 upper = TimeArray(upper; timestamp = :datetime)
 
-lower = (datetime = future_dates,  
-Lower95 = meanfc - 1.96 .* se, 
-Lower80 = meanfc - 1.28 .* se)
+lower = (datetime = future_dates, Lower95 = meanfc - 1.96 .* se, Lower80 = meanfc - 1.28 .* se)
+
 lower = TimeArray(lower; timestamp = :datetime)
+
 method = "Arar Forecast"
+
 out = ForecastARAR(meanfc, lower, upper, method, y_keep)
 return out
 end
