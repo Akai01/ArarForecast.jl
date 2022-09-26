@@ -4,7 +4,7 @@ struct Forecast
   upper::TimeArray
   method::String
   y::TimeArray
-  level::Int
+  level::Vector
 end
 
 """
@@ -19,6 +19,7 @@ Return A matrix of forecast values and prediction intervals
 - `h::Int`: Forecast horizon as an integer.
 - `freq::DataType`: A DataType from Dates, e.g. Dates.Day or Dates.Month.
 - `max_lag::Int`: An integer (>= 26) to specify maximum number of lags for sample autocovariance.
+- `level::Vector`: Prediction intervals' level
 
 # Examples
 ```julia-repl
@@ -26,7 +27,7 @@ julia> arar(data, 12, Month)
 
 ```
 """
-function arar(y::TimeArray, h::Int, freq::DataType, max_lag::Int=40)
+function arar(y::TimeArray, h::Int, freq::DataType, max_lag::Int=40, level::Vector=[80, 95])
   y_keep = y
   future_dates = range(maximum(timestamp(y)) + freq(1); step=freq(1), length=h)
   y = dropdims(values(y), dims = 2)
