@@ -3,6 +3,7 @@ module ArarForecast
 using Statistics
 using TimeSeries
 using Dates
+using Distributions
 
 include("arar.jl")
 include("accuracy.jl")

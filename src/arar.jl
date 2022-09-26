@@ -1,6 +1,3 @@
-import Statistics: Normal
-import Statistics: quantile
-
 struct Forecast
   mean::TimeArray
   lower::TimeArray
