@@ -7,6 +7,7 @@ using Dates
 include("arar.jl")
 include("accuracy.jl")
 include("plot.jl")
+include("level_multiplier.jl")
 
 export arar
 export accuracy
