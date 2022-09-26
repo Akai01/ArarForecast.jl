@@ -4,6 +4,9 @@ using Statistics
 using TimeSeries
 using Dates
 
+import Statistics: Normal
+import Statistics: quantile
+
 include("arar.jl")
 include("accuracy.jl")
 include("plot.jl")
