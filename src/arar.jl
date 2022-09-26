@@ -1,9 +1,10 @@
-struct ForecastARAR
+struct Forecast
   mean::TimeArray
   lower::TimeArray
   upper::TimeArray
   method::String
   y::TimeArray
+  level::Int
 end
 
 """
@@ -141,16 +142,26 @@ se = Statistics.sqrt!(σ2 .* map(j -> sum(τ[1:j].^2), 1:h))
 mean_fc = (datetime = future_dates, Point_Forecast = meanfc)
 mean_fc = TimeArray(mean_fc; timestamp = :datetime)
 
-upper = (datetime = future_dates, Upper95 = meanfc + 1.96 .* se, Upper80 = meanfc + 1.28 .* se)
+#upper = (datetime = future_dates, Upper95 = meanfc + 1.96 .* se, Upper80 = meanfc + 1.28 .* se)
+#upper = TimeArray(upper; timestamp = :datetime)
+#lower = (datetime = future_dates, Lower95 = meanfc - 1.96 .* se, Lower80 = meanfc - 1.28 .* se)
+#lower = TimeArray(lower; timestamp = :datetime)
 
-upper = TimeArray(upper; timestamp = :datetime)
+upper = zeros(h, length(level))
+lower = zeros(h, length(level))
 
-lower = (datetime = future_dates, Lower95 = meanfc - 1.96 .* se, Lower80 = meanfc - 1.28 .* se)
+for i in 1:length(level)
+  upper[:, i] = mean_fc + level_multiplier(level) .* se
+  lower[:, i] = mean_fc - level_multiplier(level) .* se
+end
+lower = TimeArray(future_dates, lower)
+rename(lower) = string.("lower_", level)
 
-lower = TimeArray(lower; timestamp = :datetime)
+upper = TimeArray(future_dates, upper)
+rename(upper) = string.("upper_", level)
 
 method = "Arar Forecast"
 
-out = ForecastARAR(mean_fc, lower, upper, method, y_keep)
+out = Forecast(mean_fc, lower, upper, method, y_keep, level)
 return out
 end
