@@ -152,8 +152,8 @@ upper = zeros(h, length(level))
 lower = zeros(h, length(level))
 
 for i in 1:length(level)
-  upper[:, i] = mean_fc .+ level_multiplier(level) .* se
-  lower[:, i] = mean_fc .- level_multiplier(level) .* se
+  upper[:, i] = meanfc .+ level_multiplier(level[i]) .* se
+  lower[:, i] = meanfc .- level_multiplier(level[i]) .* se
 end
 lower = TimeArray(future_dates, lower)
 rename(lower) = string.("lower_", level)
