@@ -4,6 +4,7 @@ using Statistics
 using TimeSeries
 using Dates
 using Distributions
+using Plots
 
 include("arar.jl")
 include("accuracy.jl")
