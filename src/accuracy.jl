@@ -11,8 +11,11 @@ return a list of error metrics
 
 """
 
-function accuracy(predicted::Forecast, actual::Vector)
-    predicted = predicted.mean
+function accuracy(predicted::ArarForecast.Forecast, actual::TimeArray)
+    @assert size(predicted.mean,2) == 1 "Only univariate time series are allowed"
+    @assert size(actual,2) == 1 "Only univariate time series are allowed"
+    predicted = dropdims(values(predicted.mean); dims = 2)
+    actual = dropdims(values(actual); dims = 2)
     @assert length(actual) == length(predicted) "Length of actual and prediction must be the same"
     out = errorss(actual, predicted)
     return out
@@ -39,7 +42,11 @@ julia> accuracy(actual, pred)
 ```
 
 """
-function accuracy(predicted::Vector, actual::Vector)
+function accuracy(predicted::TimeArray, actual::TimeArray)
+    @assert size(predicted,2) == 1 "Only univariate time series are allowed"
+    @assert size(actual,2) == 1 "Only univariate time series are allowed"
+    predicted = dropdims(values(predicted); dims = 2)
+    actual = dropdims(values(actual); dims = 2)
     @assert length(actual) == length(predicted) "Length of actual and prediction must be the same"
     out = errorss(actual, predicted)
     return out
