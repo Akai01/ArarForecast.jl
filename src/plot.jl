@@ -13,7 +13,7 @@ return a Forecast plot
 
 """
 
-function plot(object::Forecast, ylab::String, xlab::String)
+function plot(object::Forecast, ylab::String="Value", xlab::String="Date")
     label = "Historical Data"
     p = Plots.plot(object.y, label = label, ylab = ylab, xlab = xlab, legend=:topleft, title = object.method)
     p = Plots.plot(p, object.mean, linestyle = :dot)
