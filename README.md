@@ -21,14 +21,21 @@ Ref: [Introduction to Time Series and Forecasting, Chapter: 10.1.The ARAR Algori
     using Dates
     using ArarForecast
 
-#### Load the data
+#### Download and load the data
 
     dta = CSV.File(Downloads.download("https://raw.githubusercontent.com/Akai01/example-time-series-datasets/main/Data/AirPassengers.csv")) |> DataFrame;
+    train = filter(row -> row["ds"] < Date(1960,1,1), dta);
+    test = filter(row -> row["ds"] >= Date(1960,1,1), dta);
 
-#### Create a TimeArray
+#### Create a TimeArray:
 
-    data = (date = dta[:,"ds"], data = dta[:, "y"]);
-    data = TimeArray(data; timestamp = :date);
+    train = (date = train[:,"ds"], data = train[:, "y"]);
+    train = TimeArray(train; timestamp = :date);
+    test = (date = test[:,"ds"], test = test[:, "y"]);
+    test = TimeArray(test; timestamp = :date);
+    length(test)
+
+    ## 12
 
 There are different ways to create a `TimeArray` see
 [TimeSeries.jl](https://juliastats.org/TimeSeries.jl/latest/timearray/)
@@ -36,26 +43,76 @@ package.
 
 #### Forecasting
 
-    fc = arar(data, 12, Month)
+    fc = arar(;y = train, h = 12, freq = Month, level = [80, 95]);
+    typeof(fc)
 
-    ## 12×5 TimeArray{Float64, 2, Date, Matrix{Float64}} 1961-01-31 to 1961-12-31
-    ## │            │ Point_Forecast │ Upper95  │ Upper80  │ Lower95  │ Lower80  │
-    ## ├────────────┼────────────────┼──────────┼──────────┼──────────┼──────────┤
-    ## │ 1961-01-31 │ 466.1915       │ 486.7582 │ 479.6228 │ 445.6248 │ 452.7602 │
-    ## │ 1961-02-28 │ 426.3592       │ 449.5853 │ 441.5272 │ 403.1331 │ 411.1912 │
-    ## │ 1961-03-31 │ 463.614        │ 489.4384 │ 480.4789 │ 437.7895 │ 446.749  │
-    ## │ 1961-04-30 │ 509.5108       │ 536.8182 │ 527.3442 │ 482.2035 │ 491.6775 │
-    ## │ 1961-05-31 │ 516.2016       │ 544.5864 │ 534.7386 │ 487.8169 │ 497.6647 │
-    ## │ 1961-06-30 │ 594.0837       │ 623.2017 │ 613.0995 │ 564.9658 │ 575.0679 │
-    ## │ 1961-07-31 │ 693.9735       │ 723.6112 │ 713.3287 │ 664.3358 │ 674.6182 │
-    ## │ 1961-08-31 │ 670.4816       │ 700.4859 │ 690.0762 │ 640.4772 │ 650.8869 │
-    ## │ 1961-09-30 │ 564.4617       │ 594.727  │ 584.2268 │ 534.1964 │ 544.6966 │
-    ## │ 1961-10-31 │ 518.5135       │ 549.7526 │ 538.9145 │ 487.2743 │ 498.1124 │
-    ## │ 1961-11-30 │ 434.7389       │ 465.992  │ 455.1491 │ 403.4857 │ 414.3287 │
-    ## │ 1961-12-31 │ 485.5744       │ 516.8683 │ 506.0112 │ 454.2805 │ 465.1376 │
+    ## ArarForecast.Forecast
 
-That’s it. It is easy to use and fast and the accuracy is comparable
-with ARIMA or Prophet. No hyper-parameter tuning needed.
+#### Plot the Forecast Object
+
+    p = ArarForecast.plot(;object = fc)
+
+    ## Plot{Plots.GRBackend() n=6}
+
+    using Plots
+    Plots.plot(p, test)
+
+<img src="./docs/assets/Plots2-J1.png" width="600" />
+
+#### The accuracy
+
+    accuracy(fc, test)
+
+    ## (me = [-11.275515996902792], mae = [13.065720800742184], mape = [0.028577953269438027], mdae = [8.718991617233343], rmse = 18.21764747304158)
+
+### Benchmark with R forecast package auto.arima
+
+Load the data in and create a ts object
+
+    library(magrittr)
+    dta = read.csv("https://raw.githubusercontent.com/Akai01/example-time-series-datasets/main/Data/AirPassengers.csv")%>%
+      dplyr::mutate(ds = as.Date(ds))
+    head(dta)
+
+    ##           ds   y
+    ## 1 1949-01-31 112
+    ## 2 1949-02-28 118
+    ## 3 1949-03-31 132
+    ## 4 1949-04-30 129
+    ## 5 1949-05-31 121
+    ## 6 1949-06-30 135
+
+    train <- dta%>%dplyr::filter(ds < as.Date("1960-01-01"))
+
+    train_ts <- train%>%dplyr::select(-ds)%>%
+      ts(start = c(1949, 1), frequency = 12)
+
+    test <- dta%>%dplyr::filter(ds >= as.Date("1960-01-01"))
+
+    test_ts <- test%>%dplyr::select(-ds)%>%
+      ts(start = c(1960, 1), frequency = 12)
+
+#### Train and forecast 12 months ahead:
+
+    fc <- forecast::auto.arima(train_ts)%>%
+      forecast::forecast(h = 12)
+
+    ## Registered S3 method overwritten by 'quantmod':
+    ##   method            from
+    ##   as.zoo.data.frame zoo
+
+#### Plot the forecast
+
+    forecast::autoplot(fc) + forecast::autolayer(test_ts)
+
+![](./docs/assets/plotsR-1.png)
+
+    forecast::accuracy(fc$mean, test_ts)
+
+    ##                 ME    RMSE      MAE       MPE     MAPE       ACF1 Theil's U
+    ## Test set -16.98639 23.9317 18.52768 -3.933491 4.182395 0.04802038 0.5336134
+
+#### R forecast auto.arima MAPE of 4.18 vs Julia ArarForecast 2.85
 
 ## How does the ARAR algorithm Work?
 
@@ -175,6 +232,3 @@ with the initial conditions
 ### Ref: Brockwell, Peter J, and Richard A. Davis. Introduction to Time Series and Forecasting. [Springer](https://link.springer.com/book/10.1007/978-3-319-29854-2) (2016)
 
 
-# TODO
-1. Add ploting functions
-2. Evaluation metrics functionalities
