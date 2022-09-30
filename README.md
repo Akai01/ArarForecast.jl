@@ -1,5 +1,3 @@
-# Under Construction
-
 # ArarForecast
 Time series forecasting using ARAR Algorithm. 
 Ref: [Introduction to Time Series and Forecasting, Chapter: 10.1.The ARAR Algorithm](https://link.springer.com/book/10.1007/978-3-319-29854-2) (Peter J. Brockwell Richard A. Davis (2016) )
