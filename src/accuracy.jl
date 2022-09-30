@@ -11,7 +11,7 @@ return a list of error metrics
 
 """
 
-function accuracy(;predicted::ArarForecast.Forecast, ;actual::TimeArray)
+function accuracy(predicted::ArarForecast.Forecast, actual::TimeArray)
     @assert size(predicted.mean,2) == 1 "Only univariate time series are allowed"
     @assert size(actual,2) == 1 "Only univariate time series are allowed"
     predicted = dropdims(values(predicted.mean); dims = 2)
@@ -42,7 +42,7 @@ julia> accuracy(actual, pred)
 ```
 
 """
-function accuracy(;predicted::TimeArray, ;actual::TimeArray)
+function accuracy(predicted::TimeArray, actual::TimeArray)
     @assert size(predicted,2) == 1 "Only univariate time series are allowed"
     @assert size(actual,2) == 1 "Only univariate time series are allowed"
     predicted = dropdims(values(predicted); dims = 2)

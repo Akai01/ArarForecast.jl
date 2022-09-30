@@ -27,7 +27,7 @@ julia> arar(data, 12, Month)
 
 ```
 """
-function arar(;y::TimeArray, ;h::Int, ;freq::DataType, ;max_lag::Int=40, ;level::Vector=[80, 95])
+function arar(y::TimeArray, h::Int, freq::DataType, max_lag::Int=40, level::Vector=[80, 95])
   y_keep = y
   future_dates = range(maximum(timestamp(y)) + freq(1); step=freq(1), length=h)
   y = dropdims(values(y), dims = 2)
