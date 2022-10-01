@@ -8,7 +8,7 @@ struct Forecast
 end
 
 """
-arar(;y::TimeArray, h::Int, freq::DataType, max_lag::Int)
+arar(;y::TimeArray, h::Int, freq::DataType, m::Int, `level::Vector`, max_lag::Int)
 
 Forecasting using ARAR algorithm.
 
@@ -18,8 +18,9 @@ Return A matrix of forecast values and prediction intervals
 - `y::TimeArray`: An TimeArray with only one value column.
 - `h::Int`: Forecast horizon as an integer.
 - `freq::DataType`: A DataType from Dates, e.g. Dates.Day or Dates.Month.
-- `max_lag::Int`: An integer (>= 26) to specify maximum number of lags for sample autocovariance.
-- `level::Vector`: Prediction intervals' level
+- `m::Int`: Number of iterations to compute the coefficients of ϕ(j). It can either be 13 or 26. Default is 26.
+- `level::Vector`: Prediction intervals' level.
+- `max_lag::Int`: The maximum lag of the sample autocovariances and autocorelations of the series X_t. it must be max_lag >= m.
 
 # Examples
 ```julia-repl
@@ -27,7 +28,12 @@ julia> arar(data, 12, Month)
 
 ```
 """
-function arar(;y::TimeArray, h::Int, freq::DataType, max_lag::Int=40, level::Vector=[80, 95])
+function arar(;y::TimeArray, h::Int, freq::DataType, m::Int=26, level::Vector=[80, 95], max_lag::Int=40)
+  if length(m) > 1
+    @warn "Only one integer allowed in m. I selected the first element"
+    m = m[1]
+  end
+  @assert indexin(m, [13, 26])!=1 "m must be 13 or 26"
   y_keep = y
   future_dates = range(maximum(timestamp(y)) + freq(1); step=freq(1), length=h)
   y = dropdims(values(y), dims = 2)
@@ -72,7 +78,6 @@ y = Y
 A = reshape(repeat([gamma[1]], 16), (4,4))
 b = zeros(4)
 best_σ2 = Inf
-m = 26
 best_lag = []
 best_phi = []
 
