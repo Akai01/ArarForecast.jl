@@ -112,7 +112,7 @@ Load the data in and create a ts object
     ##                 ME    RMSE      MAE       MPE     MAPE       ACF1 Theil's U
     ## Test set -16.98639 23.9317 18.52768 -3.933491 4.182395 0.04802038 0.5336134
 
-#### R forecast auto.arima MAPE of 4.18 vs Julia ArarForecast 2.85
+#### Accuracy Benchmark: R forecast::auto.arima 4.18 vs Julia ArarForecast 2.85
 
 ## How does the ARAR algorithm Work?
 

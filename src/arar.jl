@@ -29,11 +29,7 @@ julia> arar(data, 12, Month)
 ```
 """
 function arar(;y::TimeArray, h::Int, freq::DataType, m::Int=26, level::Vector=[80, 95], max_lag::Int=40)
-  if length(m) > 1
-    @warn "Only one integer allowed in m. I selected the first element"
-    m = m[1]
-  end
-  @assert indexin(m, [13, 26])!=1 "m must be 13 or 26"
+  @assert map(x -> x in [13, 26] ,m) "m must be 13 or 26"
   y_keep = y
   future_dates = range(maximum(timestamp(y)) + freq(1); step=freq(1), length=h)
   y = dropdims(values(y), dims = 2)
