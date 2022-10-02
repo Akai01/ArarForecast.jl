@@ -54,7 +54,8 @@ julia> ape(acc, pred)
 """
 function ape(actual::Vector{}, predicted::Vector{})
     @assert length(actual) == length(predicted) "Length of actual and prediction must be the same"
-    return ae(actual, predicted) ./ abs.(actual)
+    out = ae(actual, predicted) ./ abs.(actual) .* 100
+    return out
 end
 """
 me(actual::Vector{}, predicted::Vector{})
@@ -129,7 +130,8 @@ julia> mape(acc, pred)
 """
 function mape(actual::Vector{}, predicted::Vector{})
     @assert length(actual) == length(predicted) "Length of actual and prediction must be the same"
-    return Statistics.mean.([ape(actual, predicted)])
+    out = Statistics.mean.([ape(actual, predicted)])
+    return out
 end
 
 """
