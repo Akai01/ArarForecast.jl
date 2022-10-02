@@ -29,7 +29,7 @@ julia> arar(data, 12, Month)
 ```
 """
 function arar(;y::TimeArray, h::Int, freq::DataType, m::Int=26, level::Vector{Int}=[80, 95], max_lag::Int=40)
-  @assert all(map(x -> x in range(1,100), level)) "All confidence levels must be in range(1,99)"
+  @assert all(map(x -> x in range(1,100), level)) "All confidence levels must be in range(1,100)"
   @assert map(x -> x in [13, 26] ,m) "m must be 13 or 26"
   y_keep = y
   future_dates = range(maximum(timestamp(y)) + freq(1); step=freq(1), length=h)
@@ -144,11 +144,6 @@ se = Statistics.sqrt!(σ2 .* map(j -> sum(τ[1:j].^2), 1:h))
 
 mean_fc = (datetime = future_dates, Point_Forecast = meanfc)
 mean_fc = TimeArray(mean_fc; timestamp = :datetime)
-
-#upper = (datetime = future_dates, Upper95 = meanfc + 1.96 .* se, Upper80 = meanfc + 1.28 .* se)
-#upper = TimeArray(upper; timestamp = :datetime)
-#lower = (datetime = future_dates, Lower95 = meanfc - 1.96 .* se, Lower80 = meanfc - 1.28 .* se)
-#lower = TimeArray(lower; timestamp = :datetime)
 
 upper = zeros(h, length(level))
 lower = zeros(h, length(level))
