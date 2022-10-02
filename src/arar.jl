@@ -8,7 +8,7 @@ struct Forecast
 end
 
 """
-arar(;y::TimeArray, h::Int, freq::DataType, m::Int, `level::Vector`, max_lag::Int)
+arar(;y::TimeArray, h::Int, freq::DataType, m::Int, level::Vector, max_lag::Int)
 
 Forecasting using ARAR algorithm.
 
@@ -19,7 +19,7 @@ Return A matrix of forecast values and prediction intervals
 - `h::Int`: Forecast horizon as an integer.
 - `freq::DataType`: A DataType from Dates, e.g. Dates.Day or Dates.Month.
 - `m::Int`: Number of iterations to compute the coefficients of ϕ(j). It can either be 13 or 26. Default is 26.
-- `level::Vector`: Prediction intervals' level.
+- `level::Vector{Int}`: Prediction intervals' level. A vector of integers.
 - `max_lag::Int`: The maximum lag of the sample autocovariances and autocorelations of the series X_t. it must be max_lag >= m.
 
 # Examples
@@ -28,7 +28,8 @@ julia> arar(data, 12, Month)
 
 ```
 """
-function arar(;y::TimeArray, h::Int, freq::DataType, m::Int=26, level::Vector=[80, 95], max_lag::Int=40)
+function arar(;y::TimeArray, h::Int, freq::DataType, m::Int=26, level::Vector{Int}=[80, 95], max_lag::Int=40)
+  @assert all(map(x -> x in range(1,100), level)) "All confidence levels must be in range(1,99)"
   @assert map(x -> x in [13, 26] ,m) "m must be 13 or 26"
   y_keep = y
   future_dates = range(maximum(timestamp(y)) + freq(1); step=freq(1), length=h)
