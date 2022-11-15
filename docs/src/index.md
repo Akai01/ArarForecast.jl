@@ -60,7 +60,7 @@ package.
     using Plots
     Plots.plot(p, test)
 
-<img src="./docs/assets/Plots2-J1.png" width="600" />
+<img src="./docs/build/assets/Plots2-J1.png" width="600" />
 
 #### The accuracy
 
@@ -108,7 +108,7 @@ Load the data in and create a ts object
 
     forecast::autoplot(fc) + forecast::autolayer(test_ts)
 
-![](./docs/assets/plotsR-1.png)
+![](./docs/build/assets/plotsR-1.png)
 
     forecast::accuracy(fc$mean, test_ts)
 
