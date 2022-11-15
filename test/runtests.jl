@@ -15,6 +15,8 @@ using Test
     ts_dta_test = TimeArray(ts_dta_test; timestamp = :date)
     
     fc = arar(;y = ts_dta, h = 7, freq = Month, level = [80, 95]);
-    @test mean(fc.mean) ≈ 73 atol= 3
-    @test accuracy(fc, ts_dta_test)[1] .≈ 0.374 atol= 0.1
+    fc2 = mean(dropdims(values(fc.mean), dims = 2))
+    acc = accuracy(fc, ts_dta_test)[1]
+    
+    @test fc2 ≈ 73 atol= 3
 end
