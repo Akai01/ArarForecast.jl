@@ -1,4 +1,9 @@
-# ArarForecast.jl
+```@meta
+CurrentModule = ArarForecast
+```
+
+# ArarForecast
+
 *Forecasting using Arar Algorithm*
 
 Time series forecasting using ARAR Algorithm. 
@@ -60,7 +65,7 @@ package.
     using Plots
     Plots.plot(p, test)
 
-<img src="./docs/build/assets/Plots2-J1.png" width="600" />
+<img src="./docs/assets/Plots2-J1.png" width="600" />
 
 #### The accuracy
 
@@ -108,7 +113,7 @@ Load the data in and create a ts object
 
     forecast::autoplot(fc) + forecast::autolayer(test_ts)
 
-![](./docs/build/assets/plotsR-1.png)
+![](./docs/assets/plotsR-1.png)
 
     forecast::accuracy(fc$mean, test_ts)
 
@@ -232,7 +237,7 @@ with the initial conditions
 *h* ≤ 0.
 
 
-### Ref: Brockwell, Peter J, and Richard A. Davis. Introduction to Time Series and Forecasting. [Springer](https://link.springer.com/book/10.1007/978-3-319-29854-2) (2016)
+Ref: Brockwell, Peter J, and Richard A. Davis. Introduction to Time Series and Forecasting. [Springer](https://link.springer.com/book/10.1007/978-3-319-29854-2) (2016)
 
 
 ## Package Features
@@ -240,7 +245,10 @@ with the initial conditions
 - Automatic Forecasting
 - Error maesurement
 - Forecast Plot
-## Function Documentation
-```@docs
-arar
+
+```@index
+```
+
+```@autodocs
+Modules = [ArarForecast]
 ```

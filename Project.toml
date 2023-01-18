@@ -1,5 +1,5 @@
 name = "ArarForecast"
-uuid = "4f58c5ef-8bf7-4cec-85cb-5f877db67c0d"
+uuid = "21c3ea9e-623b-461f-ab48-92d8bebc77e9"
 authors = ["Resul Akay <resulakay1@gmail.com> and contributors"]
 version = "0.1.2"
 
@@ -11,10 +11,7 @@ Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 TimeSeries = "9e3dc215-6440-5c97-bce1-76c03772f85e"
 
 [compat]
-Distributions = "0.25"
-Plots = "1"
-TimeSeries = "0.23"
-julia = "1"
+julia = "1.2"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
