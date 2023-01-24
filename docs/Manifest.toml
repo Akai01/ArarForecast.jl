@@ -10,8 +10,8 @@ version = "0.0.1"
 
 [[deps.ArarForecast]]
 path = ".."
-uuid = "21c3ea9e-623b-461f-ab48-92d8bebc77e9"
-version = "0.1.2"
+uuid = "9052e77e-047c-4a42-b584-8a5d54916102"
+version = "0.1.0"
 
 [[deps.Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
@@ -28,9 +28,9 @@ version = "0.9.3"
 
 [[deps.Documenter]]
 deps = ["ANSIColoredPrinters", "Base64", "Dates", "DocStringExtensions", "IOCapture", "InteractiveUtils", "JSON", "LibGit2", "Logging", "Markdown", "REPL", "Test", "Unicode"]
-git-tree-sha1 = "6030186b00a38e9d0434518627426570aac2ef95"
+git-tree-sha1 = "58fea7c536acd71f3eef6be3b21c0df5f3df88fd"
 uuid = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
-version = "0.27.23"
+version = "0.27.24"
 
 [[deps.IOCapture]]
 deps = ["Logging", "Random"]
